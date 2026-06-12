@@ -75,9 +75,9 @@ canvas {
   inset: 0;
   z-index: 10;
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: center;
-  padding-top: 10.5vh;
+  padding-bottom: 12vh;
   pointer-events: none;
 }
 
@@ -209,7 +209,7 @@ canvas {
 
 @media (max-width: 700px) {
   .loader-overlay {
-    padding-top: 8.5vh;
+    padding-bottom: 9vh;
   }
 
   .boot-panel {
