@@ -1,17 +1,20 @@
 import { useEffect, useState } from "react";
 
+const MIN_PROGRESS = 8;
+const MAX_PROGRESS = 96;
+
 export default function Win95Loader() {
-  const [progress, setProgress] = useState(7);
+  const [progress, setProgress] = useState(MIN_PROGRESS);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
       setProgress((current) => {
-        if (current >= 96) return 96;
+        if (current >= MAX_PROGRESS) return MIN_PROGRESS;
 
-        const nextStep = current < 45 ? 4 : current < 78 ? 2 : 1;
-        return Math.min(current + nextStep, 96);
+        const nextStep = current < 42 ? 5 : current < 74 ? 3 : 2;
+        return Math.min(current + nextStep, MAX_PROGRESS);
       });
-    }, 260);
+    }, 180);
 
     return () => window.clearInterval(timer);
   }, []);
