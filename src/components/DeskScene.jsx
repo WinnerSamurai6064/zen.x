@@ -1,15 +1,18 @@
+import deskSceneUrl from "../assets/desk-scene.jpg";
+import monitorDesktopUrl from "../assets/monitor-desktop.png";
+
 export default function DeskScene({ reveal }) {
   return (
     <section className={`desk-scene ${reveal ? "desk-scene--zoom" : ""}`}>
       <img
-        src="/desk-scene.jpg"
+        src={deskSceneUrl}
         alt="Pixel desk with retro computer"
         className="desk-scene__image"
       />
 
       <div className="monitor-screen-shell">
         <img
-          src="/monitor-desktop.png"
+          src={monitorDesktopUrl}
           alt="Desktop UI on CRT screen"
           className="monitor-screen-image"
         />
