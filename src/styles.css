@@ -1,10 +1,85 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #020302;
+  font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
+}
+
+body {
+  touch-action: none;
+}
+
+button {
+  font: inherit;
+}
+
+.app-shell {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 18%, rgba(255, 140, 190, 0.1), transparent 26%),
+    radial-gradient(circle at 15% 80%, rgba(90, 100, 255, 0.08), transparent 24%),
+    #05050c;
+}
+
+.app-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: 0.34;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 4px 4px;
+  mix-blend-mode: screen;
+}
+
+.app-shell::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 80;
+  pointer-events: none;
+  background:
+    repeating-linear-gradient(
+      0deg,
+      rgba(0, 255, 105, 0.05) 0,
+      rgba(0, 255, 105, 0.05) 1px,
+      rgba(0, 0, 0, 0.23) 2px,
+      rgba(0, 0, 0, 0.23) 4px
+    ),
+    radial-gradient(circle at center, transparent 42%, rgba(0, 0, 0, 0.48) 100%);
+  mix-blend-mode: overlay;
+  animation: crt-flicker 3s steps(2, end) infinite;
+}
+
+canvas {
+  display: block;
+  filter: saturate(1.12) contrast(1.08);
+}
+
 .stage-layer {
   position: absolute;
   inset: 0;
+  overflow: hidden;
 }
 
 .stage-layer--overlay {
-  background: rgba(0, 0, 0, 0.35);
+  z-index: 40;
+  background: rgba(0, 0, 0, 0.52);
   backdrop-filter: blur(2px);
 }
 
@@ -12,21 +87,92 @@
   animation: dissolve-out 1s steps(12, end) forwards;
 }
 
-@keyframes dissolve-out {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    filter: blur(0px) contrast(1);
-  }
-  60% {
-    opacity: 0.5;
-    filter: blur(4px) contrast(1.25);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(1.03);
-    filter: blur(12px) contrast(1.5);
-  }
+.loader-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 11vh;
+  pointer-events: none;
+}
+
+.boot-panel {
+  width: min(56vw, 360px);
+  min-width: 250px;
+  padding: 8px 10px 0;
+  color: #00ff66;
+  text-align: center;
+  text-shadow:
+    0 0 5px rgba(0, 255, 104, 0.82),
+    1px 0 rgba(255, 0, 70, 0.26),
+    -1px 0 rgba(0, 180, 255, 0.25);
+}
+
+.boot-label {
+  margin: 0 0 44px;
+  color: rgba(0, 255, 104, 0.82);
+  font-family: "Courier New", monospace;
+  font-size: 10px;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.boot-loading-text {
+  margin: 0 0 8px;
+  color: rgba(0, 255, 104, 0.82);
+  font-family: "Courier New", monospace;
+  font-size: 13px;
+  letter-spacing: 0.08em;
+}
+
+.pixel-load-frame {
+  width: 100%;
+  height: 24px;
+  padding: 3px;
+  border: 2px solid rgba(0, 255, 104, 0.82);
+  background: rgba(0, 0, 0, 0.62);
+  box-shadow:
+    0 0 12px rgba(0, 255, 104, 0.18),
+    inset 0 0 8px rgba(0, 255, 104, 0.12);
+}
+
+.pixel-load-track {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.pixel-load-track::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(255, 255, 255, 0.07) 0,
+    rgba(255, 255, 255, 0.07) 1px,
+    transparent 1px,
+    transparent 3px
+  );
+  opacity: 0.45;
+  pointer-events: none;
+}
+
+.pixel-load-runner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 36%;
+  height: 100%;
+  background: #00ff66;
+  box-shadow:
+    0 0 10px rgba(0, 255, 104, 0.85),
+    inset 0 0 0 1px rgba(160, 255, 190, 0.55);
+  animation: loading-runner 3s linear infinite;
 }
 
 .desk-scene {
@@ -95,11 +241,77 @@
   animation: crt-screen-flicker 2.8s steps(2, end) infinite;
 }
 
+@keyframes loading-runner {
+  0% {
+    transform: translateX(-112%);
+  }
+
+  100% {
+    transform: translateX(280%);
+  }
+}
+
+@keyframes dissolve-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px) contrast(1);
+  }
+
+  60% {
+    opacity: 0.5;
+    filter: blur(4px) contrast(1.25);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(1.03);
+    filter: blur(12px) contrast(1.5);
+  }
+}
+
+@keyframes crt-flicker {
+  0%,
+  100% {
+    opacity: 0.88;
+  }
+
+  50% {
+    opacity: 0.76;
+  }
+}
+
 @keyframes crt-screen-flicker {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.82;
   }
+
   50% {
     opacity: 0.68;
+  }
+}
+
+@media (max-width: 700px) {
+  .loader-overlay {
+    padding-bottom: 9vh;
+  }
+
+  .boot-panel {
+    width: min(74vw, 310px);
+    min-width: 220px;
+  }
+
+  .boot-label {
+    margin-bottom: 34px;
+    font-size: 9px;
+  }
+
+  .boot-loading-text {
+    font-size: 12px;
+  }
+
+  .pixel-load-frame {
+    height: 22px;
   }
 }
