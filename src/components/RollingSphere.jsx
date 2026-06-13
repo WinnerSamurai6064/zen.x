@@ -1,12 +1,10 @@
-import { Canvas, useFrame, useLoader } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { AdaptiveDpr, AdaptiveEvents } from "@react-three/drei";
 import { useRef, useMemo } from "react";
 import * as THREE from "three";
-import clothTextureUrl from "../assets/cloth-texture.jpg";
 
-function RollingSphereMesh() {
+function WireSphereMesh() {
   const meshRef = useRef(null);
-  const texture = useLoader(THREE.TextureLoader, clothTextureUrl);
 
   const isMobile = typeof window !== "undefined" && window.innerWidth < 768;
   const segments = isMobile ? 24 : 32;
@@ -16,26 +14,19 @@ function RollingSphereMesh() {
     [segments]
   );
 
-  // Texture settings for pixel-art feel
-  texture.colorSpace = THREE.SRGBColorSpace;
-  texture.anisotropy = 4;
-  texture.minFilter = THREE.LinearFilter;
-  texture.magFilter = THREE.LinearFilter;
-
   useFrame(({ clock }) => {
     if (!meshRef.current) return;
-    // Continuous Y-axis rotation - image rolls like a planet
     meshRef.current.rotation.y = clock.getElapsedTime() * 0.35;
+    meshRef.current.rotation.x = Math.sin(clock.getElapsedTime() * 0.12) * 0.15;
   });
 
   return (
     <mesh ref={meshRef} position={[0, 0.2, 0]} geometry={geometry}>
       <meshStandardMaterial
-        map={texture}
-        roughness={0.75}
-        metalness={0.05}
-        emissive={new THREE.Color(0x002a10)}
-        emissiveIntensity={0.15}
+        color="#00ff66"
+        wireframe
+        emissive={new THREE.Color(0x003a10)}
+        emissiveIntensity={0.35}
       />
     </mesh>
   );
@@ -55,19 +46,18 @@ export default function RollingSphere() {
     >
       <color attach="background" args={["#0a0a0a"]} />
 
-      <ambientLight intensity={0.7} />
-      <directionalLight position={[3, 4, 4]} intensity={1.0} />
-      <directionalLight position={[-2, -1, 3]} intensity={0.25} />
+      <ambientLight intensity={0.5} />
+      <directionalLight position={[3, 4, 4]} intensity={0.8} />
 
-      {/* Green CRT tint point light */}
+      {/* Green CRT tint */}
       <pointLight
         position={[0, 0, 6]}
-        intensity={0.3}
+        intensity={0.4}
         color="#00ff66"
         distance={12}
       />
 
-      <RollingSphereMesh />
+      <WireSphereMesh />
 
       <AdaptiveDpr pixelated />
       <AdaptiveEvents />

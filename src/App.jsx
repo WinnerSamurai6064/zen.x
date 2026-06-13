@@ -5,23 +5,22 @@ import DeskStage from "./components/DeskStage.jsx";
 export default function App() {
   const [stage, setStage] = useState("boot");
   const [bootDissolve, setBootDissolve] = useState(false);
-  const [deskZoom, setDeskZoom] = useState(false);
 
   useEffect(() => {
-    // 5s: begin dissolve
+    // 5s: dissolve boot stage
     const t1 = setTimeout(() => setBootDissolve(true), 5000);
-    // 6s: switch to desk stage
+    // 6s: switch to desk stage → zoom starts immediately (4.8s)
+    //     at 5s after mount, desktop-takeover expands to fullscreen
+    //     total desk phase ≈ 10s end-to-end
     const t2 = setTimeout(() => setStage("desk"), 6000);
-    // 8s: start zoom into monitor
-    const t3 = setTimeout(() => setDeskZoom(true), 8000);
 
-    return () => [t1, t2, t3].forEach(clearTimeout);
+    return () => [t1, t2].forEach(clearTimeout);
   }, []);
 
   return (
     <main className="app-shell">
       {stage === "boot" && <BootStage dissolve={bootDissolve} />}
-      {stage === "desk" && <DeskStage reveal={deskZoom} />}
+      {stage === "desk" && <DeskStage />}
     </main>
   );
 }
