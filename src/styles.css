@@ -1,229 +1,105 @@
-* {
-  box-sizing: border-box;
+.stage-layer {
+  position: absolute;
+  inset: 0;
 }
 
-html,
-body,
-#root {
-  width: 100%;
-  height: 100%;
-  margin: 0;
+.stage-layer--overlay {
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(2px);
+}
+
+.stage-layer--dissolve {
+  animation: dissolve-out 1s steps(12, end) forwards;
+}
+
+@keyframes dissolve-out {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    filter: blur(0px) contrast(1);
+  }
+  60% {
+    opacity: 0.5;
+    filter: blur(4px) contrast(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.03);
+    filter: blur(12px) contrast(1.5);
+  }
+}
+
+.desk-scene {
+  position: absolute;
+  inset: 0;
   overflow: hidden;
-  background: #020302;
-  font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
+  background: #04050b;
 }
 
-body {
-  touch-action: none;
-}
-
-button {
-  font: inherit;
-}
-
-.app-shell {
-  position: relative;
+.desk-scene__image {
   width: 100%;
   height: 100%;
-  min-height: 100dvh;
-  background:
-    radial-gradient(circle at 50% 18%, rgba(255, 140, 190, 0.1), transparent 26%),
-    radial-gradient(circle at 15% 80%, rgba(90, 100, 255, 0.08), transparent 24%),
-    #05050c;
+  object-fit: cover;
+  transform-origin: 68% 38%;
+  transition: transform 4.8s cubic-bezier(0.2, 0.7, 0.2, 1);
+  image-rendering: pixelated;
 }
 
-.app-shell::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 7;
-  pointer-events: none;
-  opacity: 0.34;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.055) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 4px 4px;
-  mix-blend-mode: screen;
+.desk-scene--zoom .desk-scene__image {
+  transform: scale(2.35);
 }
 
-.app-shell::after {
-  content: "";
+.monitor-screen-shell {
+  position: absolute;
+  left: 54.6%;
+  top: 31.2%;
+  width: 25%;
+  height: 14.2%;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #7dd4ff;
+  transform: perspective(600px) rotateY(-12deg) rotateX(5deg) skewX(-4deg);
+  box-shadow:
+    0 0 26px rgba(120, 205, 255, 0.28),
+    inset 0 0 18px rgba(255, 255, 255, 0.08);
+}
+
+.monitor-screen-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  image-rendering: pixelated;
+  filter: saturate(0.92) contrast(1.04) brightness(0.96);
+}
+
+.monitor-screen-crt {
   position: absolute;
   inset: 0;
-  z-index: 8;
   pointer-events: none;
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(255, 255, 255, 0.045) 0,
-      rgba(255, 255, 255, 0.045) 1px,
-      rgba(0, 0, 0, 0.16) 2px,
-      rgba(0, 0, 0, 0.16) 4px
+      rgba(255, 255, 255, 0.08) 0px,
+      rgba(255, 255, 255, 0.08) 1px,
+      rgba(0, 0, 0, 0.18) 2px,
+      rgba(0, 0, 0, 0.18) 4px
     ),
-    radial-gradient(circle at center, transparent 42%, rgba(0, 0, 0, 0.46) 100%);
-  mix-blend-mode: overlay;
-  animation: crt-flicker 3s steps(2, end) infinite;
-}
-
-canvas {
-  display: block;
-  filter: saturate(1.12) contrast(1.08);
-}
-
-.loader-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  padding-bottom: 12vh;
-  pointer-events: none;
-}
-
-.boot-panel {
-  width: min(48vw, 320px);
-  min-width: 230px;
-  transform: scale(1);
-}
-
-.boot-label {
-  margin: 0 0 8px;
-  color: rgba(210, 255, 213, 0.72);
-  font-size: 9px;
-  letter-spacing: 0.22em;
-  text-align: center;
-  text-shadow:
-    0 0 4px rgba(135, 255, 160, 0.55),
-    1px 0 rgba(255, 0, 90, 0.34),
-    -1px 0 rgba(0, 180, 255, 0.32);
-}
-
-.pixel-load-frame {
-  width: 100%;
-  height: 34px;
-  padding: 4px;
-  border: 2px solid rgba(190, 205, 184, 0.82);
-  border-radius: 8px;
-  background: rgba(0, 0, 0, 0.86);
-  box-shadow:
-    0 0 0 1px rgba(42, 64, 45, 0.8),
-    inset 0 0 9px rgba(143, 255, 154, 0.15),
-    0 0 12px rgba(143, 255, 154, 0.16);
-}
-
-.pixel-load-track {
-  position: relative;
-  width: 100%;
-  height: 100%;
-  overflow: hidden;
-  border-radius: 3px;
-  background: #010301;
-}
-
-.pixel-load-track::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.08) 1px, transparent 1px);
-  background-size: 6px 6px;
+    linear-gradient(
+      90deg,
+      rgba(255, 0, 80, 0.04),
+      transparent 25%,
+      transparent 75%,
+      rgba(0, 180, 255, 0.04)
+    );
   mix-blend-mode: screen;
-  opacity: 0.28;
+  animation: crt-screen-flicker 2.8s steps(2, end) infinite;
 }
 
-.pixel-load-fill {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 5px;
-  height: 100%;
-  min-width: 36px;
-  padding-right: 5px;
-  transition: width 260ms steps(8, end);
-}
-
-.pixel-load-fill::before {
-  content: "";
-  position: absolute;
-  inset: 2px 0 2px 0;
-  opacity: 0.25;
-  background: linear-gradient(90deg, transparent, rgba(90, 255, 120, 0.2));
-}
-
-.load-block {
-  position: relative;
-  z-index: 2;
-  display: block;
-  width: 13px;
-  height: 20px;
-  image-rendering: pixelated;
-  box-shadow:
-    inset 0 0 0 1px rgba(255, 255, 255, 0.28),
-    0 0 8px currentColor;
-  animation: block-pulse 700ms steps(2, end) infinite;
-}
-
-.load-green {
-  color: #00ff25;
-  background: #00d91f;
-}
-
-.load-yellow {
-  color: #ffd438;
-  background: #ffc329;
-  animation-delay: 120ms;
-}
-
-.load-red {
-  color: #ff0050;
-  background: #d40043;
-  animation-delay: 240ms;
-}
-
-@keyframes block-pulse {
-  0%,
-  100% {
-    transform: translateY(0);
-    filter: brightness(0.95);
+@keyframes crt-screen-flicker {
+  0%, 100% {
+    opacity: 0.82;
   }
-
   50% {
-    transform: translateY(-1px);
-    filter: brightness(1.35);
-  }
-}
-
-@keyframes crt-flicker {
-  0%,
-  100% {
-    opacity: 0.88;
-  }
-
-  50% {
-    opacity: 0.78;
-  }
-}
-
-@media (max-width: 700px) {
-  .loader-overlay {
-    padding-bottom: 9vh;
-  }
-
-  .boot-panel {
-    width: min(72vw, 300px);
-    min-width: 210px;
-  }
-
-  .pixel-load-frame {
-    height: 31px;
-    border-radius: 7px;
-  }
-
-  .load-block {
-    width: 11px;
-    height: 18px;
+    opacity: 0.68;
   }
 }
