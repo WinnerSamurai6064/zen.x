@@ -1,7 +1,7 @@
 import deskSceneUrl from "../assets/desk-scene.jpg";
-import monitorDesktopUrl from "../assets/monitor-desktop.png";
+import monitorDesktopUrl from "../assets/monitor-desktop.jpg";
 
-export default function DeskScene({ reveal }) {
+export default function DeskStage({ reveal }) {
   return (
     <section className={`desk-scene ${reveal ? "desk-scene--zoom" : ""}`}>
       <img

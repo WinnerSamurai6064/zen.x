@@ -1,3 +1,8 @@
+/* ====================
+   ZEN.X BOOT SEQUENCE
+   Global Styles + CRT Effects
+   ==================== */
+
 * {
   box-sizing: border-box;
 }
@@ -10,7 +15,7 @@ body,
   margin: 0;
   overflow: hidden;
   background: #020302;
-  font-family: "MS Sans Serif", Tahoma, Geneva, sans-serif;
+  font-family: "MS Sans Serif", Tahoma, Geneva, Verdana, sans-serif;
 }
 
 body {
@@ -21,18 +26,17 @@ button {
   font: inherit;
 }
 
+/* ── App Shell ── */
 .app-shell {
   position: relative;
   width: 100%;
   height: 100%;
   min-height: 100dvh;
   overflow: hidden;
-  background:
-    radial-gradient(circle at 50% 18%, rgba(255, 140, 190, 0.1), transparent 26%),
-    radial-gradient(circle at 15% 80%, rgba(90, 100, 255, 0.08), transparent 24%),
-    #05050c;
+  background: #05050c;
 }
 
+/* Scanline grid overlay */
 .app-shell::before {
   content: "";
   position: absolute;
@@ -47,6 +51,7 @@ button {
   mix-blend-mode: screen;
 }
 
+/* CRT scanlines + vignette */
 .app-shell::after {
   content: "";
   position: absolute;
@@ -71,33 +76,49 @@ canvas {
   filter: saturate(1.12) contrast(1.08);
 }
 
+/* ── Stage Layer ── */
 .stage-layer {
   position: absolute;
   inset: 0;
   overflow: hidden;
 }
 
-.stage-layer--overlay {
-  z-index: 40;
-  background: rgba(0, 0, 0, 0.52);
-  backdrop-filter: blur(2px);
-}
-
 .stage-layer--dissolve {
   animation: dissolve-out 1s steps(12, end) forwards;
 }
 
+/* ── Boot Stage ── */
+.boot-stage {
+  background: #0a0a0a;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.boot-stage__sphere {
+  width: 100%;
+  height: 65vh;
+  min-height: 240px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── Loader Overlay (positioned at bottom of BootStage) ── */
 .loader-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 50;
+  position: relative;
+  z-index: 10;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 11vh;
+  padding-bottom: 4vh;
+  width: 100%;
+  height: 20vh;
   pointer-events: none;
 }
 
+/* ── Boot Panel ── */
 .boot-panel {
   width: min(56vw, 360px);
   min-width: 250px;
@@ -125,8 +146,13 @@ canvas {
   font-family: "Courier New", monospace;
   font-size: 13px;
   letter-spacing: 0.08em;
+  text-shadow:
+    0 0 6px rgba(0, 255, 104, 0.7),
+    1px 0 rgba(255, 0, 70, 0.2),
+    -1px 0 rgba(0, 180, 255, 0.2);
 }
 
+/* ── Progress Bar ── */
 .pixel-load-frame {
   width: 100%;
   height: 24px;
@@ -146,6 +172,7 @@ canvas {
   background: rgba(0, 0, 0, 0.9);
 }
 
+/* Scanlines on bar track */
 .pixel-load-track::after {
   content: "";
   position: absolute;
@@ -175,6 +202,7 @@ canvas {
   animation: loading-runner 3s linear infinite;
 }
 
+/* ── Desk Scene ── */
 .desk-scene {
   position: absolute;
   inset: 0;
@@ -195,6 +223,7 @@ canvas {
   transform: scale(2.35);
 }
 
+/* ── Monitor Screen Overlay ── */
 .monitor-screen-shell {
   position: absolute;
   left: 54.6%;
@@ -241,11 +270,12 @@ canvas {
   animation: crt-screen-flicker 2.8s steps(2, end) infinite;
 }
 
+/* ── Keyframes ── */
+
 @keyframes loading-runner {
   0% {
     transform: translateX(-112%);
   }
-
   100% {
     transform: translateX(280%);
   }
@@ -257,12 +287,10 @@ canvas {
     transform: scale(1);
     filter: blur(0px) contrast(1);
   }
-
   60% {
     opacity: 0.5;
     filter: blur(4px) contrast(1.25);
   }
-
   100% {
     opacity: 0;
     transform: scale(1.03);
@@ -275,7 +303,6 @@ canvas {
   100% {
     opacity: 0.88;
   }
-
   50% {
     opacity: 0.76;
   }
@@ -286,15 +313,16 @@ canvas {
   100% {
     opacity: 0.82;
   }
-
   50% {
     opacity: 0.68;
   }
 }
 
+/* ── Responsive ── */
 @media (max-width: 700px) {
-  .loader-overlay {
-    padding-bottom: 9vh;
+  .boot-stage__sphere {
+    height: 55vh;
+    min-height: 200px;
   }
 
   .boot-panel {
@@ -313,5 +341,37 @@ canvas {
 
   .pixel-load-frame {
     height: 22px;
+  }
+}
+
+@media (max-width: 420px) {
+  .boot-stage__sphere {
+    height: 50vh;
+    min-height: 180px;
+  }
+
+  .boot-panel {
+    width: min(85vw, 280px);
+    min-width: 200px;
+  }
+}
+
+@media (max-width: 320px) {
+  .boot-stage__sphere {
+    height: 48vh;
+    min-height: 160px;
+  }
+
+  .boot-panel {
+    width: 90vw;
+    min-width: 180px;
+  }
+
+  .boot-loading-text {
+    font-size: 11px;
+  }
+
+  .pixel-load-frame {
+    height: 20px;
   }
 }
